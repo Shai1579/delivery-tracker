@@ -1,6 +1,7 @@
 import React, { memo, useCallback, useEffect, useState } from 'react'
 import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 import bikeIcon from '../assets/img/motorbike.png'
+import {GOOGLE_API_KEY} from '../config.js'
 
 const containerStyle = {
     width: '800px',
@@ -12,7 +13,7 @@ function MyComponent({coords}) {
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: "AIzaSyD_RtSmY40CDJvjkyKGMbNuDLl29MwbZyk"
+    googleMapsApiKey: GOOGLE_API_KEY
   })
 
   const [map, setMap] = useState(null)
