@@ -1,0 +1,59 @@
+// flex helpers
+.flex {
+    display: flex;
+    > *.full {
+        flex: 1;
+    }
+    &.wrap {
+        flex-wrap: wrap;
+    }
+    &.col {
+        flex-direction: column;
+    }
+    &.justify-center {
+        justify-content: center;
+    }
+    &.align-center {
+        align-items: center;
+    }
+    &.align-end {
+        align-items: flex-end;
+    }
+    &.align-start {
+        align-items: flex-start;
+    }
+    &.center {
+        align-items: center;
+        justify-content: center;
+    }
+    &.space-bt {
+        justify-content: space-between;
+    }
+    &.todo-form {
+        align-items: flex-start;
+        justify-content: stretch;
+    }
+}
+
+//grid helpers
+.grid {
+    display: grid;
+}
+
+.clean-btn {
+    border: 0;
+    background: transparent;
+    width: max-content;
+    text-align: start;
+    margin: 0;
+}
+
+.nice-btn {
+    border: 2px solid ;
+    width: max-content;
+    margin: 0;
+    padding: 5px 10px;
+    border-radius: 2em;
+    font-size: 1em;
+}
+
