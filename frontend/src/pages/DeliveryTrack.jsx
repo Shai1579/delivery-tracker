@@ -30,7 +30,7 @@ export function DeliveryTrack() {
                     clearInterval(intervalId.current)
                     alert('please enable location in your setting')
                 });
-            }, 10000)
+            }, 5000)
             
         }
         setIsSharing(!isSharing)

@@ -19,15 +19,20 @@ app.use(cookieParser())
 app.use(bodyParser.json())
 app.use(session) 
 
-// if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.resolve(__dirname, 'public')))
-// } else {
-    const corsOptions = {
-        origin: ['http://127.0.0.1:8080', 'http://localhost:8080', 'http://127.0.0.1:3000', 'http://localhost:3000'],
+    let corsOptions = {
+        origin: ['https://maps.googleapis.com'],
         credentials: true
     }
     app.use(cors(corsOptions))
-// } 
+} else {
+    let corsOptions = {
+        origin: ['http://127.0.0.1:8080', 'http://localhost:8080', 'http://127.0.0.1:3000', 'http://localhost:3000', 'https://maps.googleapis.com'],
+        credentials: true
+    }
+    app.use(cors(corsOptions))
+} 
  
 const { connectSockets, broadcast, getSocket } = require('./services/socket.service')
   

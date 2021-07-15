@@ -2,9 +2,10 @@ import { useEffect, useState } from "react"
 import { useParams } from "react-router"
 import { socketService } from "../services/socketService"
 import { Map } from "../cmps/Map"
-
+import { locationService } from "../services/locationService"
+ 
 export function DeliveryDisplay() {
-    const { id } = useParams()
+    const { id, lat, lng } = useParams()
     const [coords, setCoords] = useState(null)
     const [userLocation, setUserLocation] = useState(null)
     const [isShowDir, setIsShowDir] = useState(false)
@@ -17,8 +18,12 @@ export function DeliveryDisplay() {
         })
         socketService.setup()
         socketService.emit('register customer', id)
-        socketService.on('new coords', coords => {
-            setCoords(coords)
+        socketService.on('new coords', async(newCoords) => {
+            if (!coords){
+                const directions = await locationService.getDirections({lat, lng}, newCoords)
+                console.log(directions);
+            }
+            setCoords(newCoords)
         })
 
         return () => {
@@ -40,7 +45,8 @@ export function DeliveryDisplay() {
             <pre>{JSON.stringify(coords)}</pre>
             {coords && (isShowDir ? 
                 <iframe width="600" height="450" style={{border: 0}} loading="lazy" allowFullScreen 
-                src={`https://www.google.com/maps/embed/v1/directions?origin=${coords.lat}%2f${coords.lng}&destination=destination=${userLocation}&key=AIzaSyD_RtSmY40CDJvjkyKGMbNuDLl29MwbZyk`}></iframe>
+                // src={`https://www.google.com/maps/embed/v1/directions?origin=${coords.lat}%2f${coords.lng}&destination=destination=${userLocation}&key=AIzaSyD_RtSmY40CDJvjkyKGMbNuDLl29MwbZyk`}></iframe>
+                src={`https://www.google.com/maps/embed/v1/directions?origin=31.8064792%2f35.1672849&destination=destination=harel+mall+mevasseret&key=AIzaSyD_RtSmY40CDJvjkyKGMbNuDLl29MwbZyk`}></iframe>
                 :
                 <Map coords={coords}/>)
             }

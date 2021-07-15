@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useEffect, useState } from 'react'
 import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 import bikeIcon from '../assets/img/motorbike.png'
-import {GOOGLE_API_KEY} from '../../config/config.js'
+import {GOOGLE_API_KEY} from '../config/config.js'
 
 const containerStyle = {
     width: '800px',
