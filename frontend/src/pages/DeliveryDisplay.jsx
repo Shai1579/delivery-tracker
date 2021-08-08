@@ -1,31 +1,23 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useParams } from "react-router"
 import { socketService } from "../services/socketService"
 import { Map } from "../cmps/Map"
+import { CountDown } from "../cmps/CountDown"
 import { locationService } from "../services/locationService"
- 
+
 export function DeliveryDisplay() {
-    const { id, lat, lng } = useParams()
+
+    const { id, lat, lng, astimatedTime } = useParams()
+
     const [coords, setCoords] = useState(null)
-    const [userLocation, setUserLocation] = useState(null)
-    const [isShowDir, setIsShowDir] = useState(false)
+    const [directions, setDirections] = useState(null)
+    const [timeLeft, setTimeLeft] = useState(null)
+    const [isCounting, setIsCounting] = useState(true)
 
     useEffect(() => {
-        navigator.geolocation?.getCurrentPosition(({ coords }) => {
-            let location = `${coords.latitude}%2f${coords.longitude}`
-            setUserLocation(location)
-            setIsShowDir(true)
-        })
         socketService.setup()
         socketService.emit('register customer', id)
-        socketService.on('new coords', async(newCoords) => {
-            if (!coords){
-                const directions = await locationService.getDirections({lat, lng}, newCoords)
-                console.log(directions);
-            }
-            setCoords(newCoords)
-        })
-
+        socketService.on('new coords', onNewCoords)
         return () => {
             socketService.off('new coords')
             socketService.terminate()
@@ -33,22 +25,54 @@ export function DeliveryDisplay() {
     }, [id])
 
     useEffect(() => {
-        if (!userLocation) return
-        const [userLat, userLng] = userLocation.split('%2f')
-        console.log(Math.abs(coords.lat - userLat), Math.abs(coords.lng - userLng));
-        if (coords && (Math.abs(coords.lat - userLat) < 0.1) && (Math.abs(coords.lng - userLng) < 0.1)) setIsShowDir(false)
-    },[coords])
+        if (!directions && coords) onSetDirections(coords)
+    }, [coords])
+
+    const onNewCoords = (newCoords) => {
+        setCoords(newCoords)
+    }
+
+    const onSetDirections = async (coords) => {
+        if (directions) return
+        const newDirections = await locationService.getDirections({ lat, lng }, coords)
+        setDirections(newDirections.routes[0].legs[0])
+        if (newDirections.endTime) setTimeLeft(newDirections.endTime - Date.now())
+        else {
+            const arrivalTime = Date.now() + newDirections.routes[0]?.legs[0].duration.value
+            setTimeLeft(arrivalTime - Date.now())
+        }
+    }
 
     return (
         <main className="delivery-display">
-            <h1>display!!</h1>
-            <pre>{JSON.stringify(coords)}</pre>
-            {coords && (isShowDir ? 
-                <iframe width="600" height="450" style={{border: 0}} loading="lazy" allowFullScreen 
-                // src={`https://www.google.com/maps/embed/v1/directions?origin=${coords.lat}%2f${coords.lng}&destination=destination=${userLocation}&key=AIzaSyD_RtSmY40CDJvjkyKGMbNuDLl29MwbZyk`}></iframe>
-                src={`https://www.google.com/maps/embed/v1/directions?origin=31.8064792%2f35.1672849&destination=destination=harel+mall+mevasseret&key=AIzaSyD_RtSmY40CDJvjkyKGMbNuDLl29MwbZyk`}></iframe>
-                :
-                <Map coords={coords}/>)
+            {coords && isCounting &&
+                <div className="map-container">
+                    <Map coords={coords} userPos={{ lat: +lat, lng: +lng }} />
+                </div>
+            }
+            {directions && isCounting ?
+                <section className="matrix-container">
+                    <div className="timer flex center">
+                        {timeLeft && <CountDown sec={(timeLeft / 1000)} isCounting={isCounting} setIsCounting={setIsCounting} getDirections={() => onSetDirections(coords)} />}
+                    </div>
+                </section>
+                : coords && 
+                <div className="finish flex col center">
+                    <h2>האמת..</h2>
+                    <h2>אנחנו קצת מקנאים בכם עכשיו🙁</h2>
+                    <h1>בתיאבון!</h1>
+                </div>
+            }
+            {!coords &&
+                <section className="pre-display flex col center">
+                    <h1>איזה כיף שאתם פה 🥳</h1>
+                    <h3>ההזמנה שלכם בהכנה!</h3>
+                    {astimatedTime && 
+                    <h3>המשלוח יגיע עד השעה: <span>{astimatedTime}</span></h3>
+                    }
+                    <h4>ברגע שהאוכל יהיה מוכן תוכלו לראות את המיקום של השליח בלייב על המפה!</h4>
+                    <h5>(אל תדאגו, אנחנו יודעים שאתם רעבים..)</h5>
+                </section>
             }
         </main>
     )

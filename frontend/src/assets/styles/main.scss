@@ -1,12 +1,12 @@
-// Setup
-@import "setup/variables";
-
 // Basics
 @import "basics/helpers";
 @import "basics/base";
 
-
 // Components
+@import "cmps/Msg";
 
 //pages
+@import "pages/DeliveryDisplay";
+@import "pages/DeliveryTrack";
+
 

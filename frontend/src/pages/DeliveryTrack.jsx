@@ -2,14 +2,19 @@ import { useEffect, useState, Fragment, useRef } from "react"
 import { useParams } from "react-router"
 import { socketService } from '../services/socketService'
 import { locationService } from '../services/locationService'
+import { Msg } from '../cmps/Msg'
 import ReactNoSleep from 'react-no-sleep';
+import connectionErrorSound from '../assets/sounds/connection-eror.wav';
 
 export function DeliveryTrack() {
+    const audio = new Audio();
 
     const { strIds } = useParams()
+    const intervalId = useRef(null)
+
     const [isSharing, setIsSharing] = useState(false)
-    const [socketErr, setSocketErr] = useState(null)
-    const intervalId = useRef(null);
+    const [msg, setMsg] = useState('')
+
 
     useEffect(() => {
         socketService.setup()
@@ -19,21 +24,24 @@ export function DeliveryTrack() {
             clearInterval(intervalId.current)
             socketService.terminate()
         }
-    }, [strIds, socketErr])
+    }, [strIds])
 
     const onToggleShareLocation = () => {
+        audio.play()
         if (isSharing) clearInterval(intervalId.current)
         else if (!navigator.geolocation) alert('Geolocation is not supported by this browser.')
         else {
-            intervalId.current = setInterval(() => {
-                navigator.geolocation.getCurrentPosition(onNewPos, (e) => {
-                    clearInterval(intervalId.current)
-                    alert('please enable location in your setting')
-                });
-            }, 5000)
-            
+            getNewPos()
+            intervalId.current = setInterval(getNewPos, 5000)
         }
         setIsSharing(!isSharing)
+    }
+
+    const getNewPos = () => {
+        navigator.geolocation.getCurrentPosition(onNewPos, (e) => {
+            clearInterval(intervalId.current)
+            alert('please enable location in your setting')
+        });
     }
 
     const onNewPos = async ({ coords }) => {
@@ -44,28 +52,31 @@ export function DeliveryTrack() {
             console.log('there has been an error');
             clearInterval(intervalId.current)
             setIsSharing(false)
-            setTimeout(() => {
-                setSocketErr({...err})
-                onToggleShareLocation()
-            },60000)
+            setMsg('Lost connection, Please refresh!')
+            audio.src = connectionErrorSound
+            audio.setAttribute('loop', true)
+            audio.play()
         }
     }
 
     return (
-        <main className="delivery-track">
-            <h1>Hi there delivery-men</h1>
+        <main className="delivery-track flex col center">
+            {msg && <Msg msg={msg}/>}
+            <h1>שלום לך שליח.ה</h1>
+            <h3>תודה שאתה דואג לנו לאוכל חם!</h3>
+            <h3>אתם באמת עושים עבודת קודש 😉</h3>
             <ReactNoSleep>
                 {({ isOn, enable, disable }) => (
                     <Fragment>
-                        <h3>Your phone will {isOn ? 'not' : ''} stay awake</h3>
-                        <button onClick={isOn ? disable : enable}>
-                            {isOn ? 'on' : 'off'}
+                        <h3>המסך שלך {isOn ? '' : 'לא'} ישאר דלוק</h3>
+                        <button onClick={isOn ? disable : enable} className={isOn ? 'deactivate' : 'activate'}>
+                            {isOn ? ' כיבוי אוטומטי' : 'השאר דלוק'}
                         </button>
                     </Fragment>
                 )}
             </ReactNoSleep>
-            <h3>Your location {isSharing ? 'is shared now' : 'is not shared yet'}</h3>
-            <button onClick={onToggleShareLocation}>{isSharing ? 'stop' : 'start'} sharing</button>
+            <h3>המיקום שלך {isSharing ? 'משותף עכשיו' : 'עוד לא משותף'}</h3>
+            <button onClick={onToggleShareLocation} className={isSharing ? 'deactivate' : 'activate'}>{isSharing ? 'סייים ' : 'התחל '} שיתוף</button>
         </main>
     )
 }

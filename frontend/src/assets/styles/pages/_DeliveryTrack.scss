@@ -1,0 +1,12 @@
+.delivery-track{
+    height: 70%;
+    button{
+        margin-bottom: 20px;
+        &.activate{
+            background-color: #ec079f;
+        }
+        &.deactivate{
+            background-color: #ec079f8c;
+        }
+    }
+}

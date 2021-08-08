@@ -33,8 +33,10 @@ async function ajax(endpoint, method = 'get', data = null) {
         })
         return res.data
     } catch (err) {
-        console.log(`Had Issues ${method}ing to the backend, endpoint: ${endpoint}, with data: ${data}`)
+        process.env.NODE_ENV === 'production' ? 
         console.dir(err)
+        :
+        console.log(`Had Issues ${method}ing to the backend, endpoint: ${endpoint}, with data: ${data}`) 
         throw err
     }
 }

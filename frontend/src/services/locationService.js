@@ -1,13 +1,8 @@
-import Axios from 'axios'
-import { GOOGLE_API_KEY } from '../config/config'
 import { httpService } from './httpService'
-const axios = Axios.create({
-    withCredentials: true
-})
 
 export const locationService = {
     setCoords,
-    getDirections,
+    getDirections
 }
 
 async function setCoords(coords) {
@@ -17,17 +12,13 @@ async function setCoords(coords) {
         throw err
     }
 }
-async function getDirections(userPos, delivererPos) {
-    const userPosStr = `${userPos.lat}%2f${userPos.lng}`
-    const delivererPosStr = `${delivererPos.lat}%2f${delivererPos.lng}`
+async function getDirections(origin, destination) {
     try {
-        await axios.get(`https://maps.googleapis.com/maps/api/directions/json?origin=${delivererPosStr}&destination=${userPosStr}&key=${GOOGLE_API_KEY}`, {
-            transformRequest: (data, headers) => {
-                delete headers.common['Authorization', 'Access-Control-Allow-Origin'];
-                return data;
-            }
-        })
+        const directions = await httpService.get(`directions/${origin.lat},${origin.lng}/${destination.lat},${destination.lng}`)
+        return directions
     } catch (err) {
         throw err
     }
 }
+
+
