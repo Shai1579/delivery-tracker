@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { useParams } from "react-router"
 import { socketService } from "../services/socketService"
 import { Map } from "../cmps/Map"
@@ -7,7 +7,7 @@ import { locationService } from "../services/locationService"
 
 export function DeliveryDisplay() {
 
-    const { id, lat, lng, astimatedTime } = useParams()
+    const { id, lat, lng, estimatedTime, estimatedDate } = useParams()
 
     const [coords, setCoords] = useState(null)
     const [directions, setDirections] = useState(null)
@@ -65,13 +65,19 @@ export function DeliveryDisplay() {
             }
             {!coords &&
                 <section className="pre-display flex col center">
-                    <h1>איזה כיף שאתם פה 🥳</h1>
-                    <h3>ההזמנה שלכם בהכנה!</h3>
-                    {astimatedTime && 
-                    <h3>המשלוח יגיע עד השעה: <span>{astimatedTime}</span></h3>
+                    <h1>איזה כיף! אנחנו נמשיך מכאן 🥳</h1>
+                    <h4>ההזמנה בהכנה. יום לפני המשלוח הבשלן קונה מצרכים טריים, וביום המשלוח מבשל הכל, על המקום.</h4>
+                    {estimatedDate && 
+                    <h3> המשלוח יגיע בתאריך: <span>{estimatedDate}</span></h3>
                     }
-                    <h4>ברגע שהאוכל יהיה מוכן תוכלו לראות את המיקום של השליח בלייב על המפה!</h4>
-                    <h5>(אל תדאגו, אנחנו יודעים שאתם רעבים..)</h5>
+                    {estimatedTime && 
+                    <h3> {!estimatedDate && 'המשלוח יגיע ' } בשעה: <span>{estimatedTime}</span></h3>
+                    }
+                    <h4>ברגע שהאוכל יהיה מוכן, תיפתח כאן מפה עם מיקום השליח וספירה לאחור עד שיגיע!</h4>
+                    <h3> </h3>
+                    <h3> </h3>
+                    <h3> </h3>
+                    <h3> </h3>
                 </section>
             }
         </main>

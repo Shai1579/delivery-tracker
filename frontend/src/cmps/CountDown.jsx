@@ -23,6 +23,7 @@ export function CountDown({sec, isCounting, setIsCounting, getDirections}) {
                 isPlaying={isCounting}
                 duration={sec}
                 colors={[["#fff"]]}
+                size={150}
                 onComplete={() => setIsCounting(false)}
             >
                 {renderTime}

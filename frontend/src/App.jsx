@@ -11,7 +11,7 @@ export function App() {
       <Router>
           <Switch>
             <Route path="/track/:strIds" component={DeliveryTrack} />
-            <Route path="/display/:id/:lat?/:lng?/:astimatedTime?" component={DeliveryDisplay} />
+            <Route path="/display/:id/:lat?/:lng?/:estimatedTime?/:estimatedDate?" component={DeliveryDisplay} />
           </Switch>
       </Router>
     </div>

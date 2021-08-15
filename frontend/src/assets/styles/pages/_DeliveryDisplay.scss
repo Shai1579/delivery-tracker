@@ -1,21 +1,24 @@
 .delivery-display {
     height: 100%;
+
     h1,
     h3,
     h4 {
         text-align: center;
-        margin: 30px 20px 0;
+        margin: 10px 20px 0;
     }
     .map-container {
         height: 100%;
     }
     .pre-display {
-        height: 70%;
+        height: 100%;
+        justify-content: flex-end;
+        background-color: #F2F2F2;
         h3{
             span{
                 display: block;
-                margin-top: 20px;
-                font-size: 2em;
+
+                font-size: 1.4em;
             }
         }
     }
@@ -47,7 +50,7 @@
         }
         border-radius: 50%;
         .value {
-            font-size: 2.2em;
+            font-size: 1.8em;
         }
     }
     .finish{
