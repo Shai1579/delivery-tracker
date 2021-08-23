@@ -7,7 +7,7 @@ import { locationService } from "../services/locationService"
 
 export function DeliveryDisplay() {
 
-    const { id, lat, lng, estimatedTime, estimatedDate } = useParams()
+    const { id, lat, lng, estimatedTime, estimatedTimeTo, estimatedDate } = useParams()
 
     const [coords, setCoords] = useState(null)
     const [directions, setDirections] = useState(null)
@@ -42,7 +42,7 @@ export function DeliveryDisplay() {
             setTimeLeft(arrivalTime - Date.now())
         }
     }
-
+    const timeTextString = estimatedTimeTo ? "בין השעות:" : "בשעה:";
     return (
         <main className="delivery-display">
             {coords && isCounting &&
@@ -71,7 +71,7 @@ export function DeliveryDisplay() {
                     <h3> המשלוח יגיע בתאריך: <span>{estimatedDate}</span></h3>
                     }
                     {estimatedTime && 
-                    <h3> {!estimatedDate && 'המשלוח יגיע ' } בשעה: <span>{estimatedTime}</span></h3>
+                    <h3> {!estimatedDate && 'המשלוח יגיע ' } {timeTextString} <span>{estimatedTime}</span></h3>
                     }
                     <h4>ברגע שהאוכל יהיה מוכן, תיפתח כאן מפה עם מיקום השליח וספירה לאחור עד שיגיע!</h4>
                     <h3> </h3>
