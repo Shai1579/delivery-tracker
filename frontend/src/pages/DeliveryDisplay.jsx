@@ -142,11 +142,7 @@ export function DeliveryDisplay() {
       )}
       {!coords && (
         <section className="pre-display flex col center">
-          <h1>איזה כיף! אנחנו נמשיך מכאן 🥳</h1>
-          <h4>
-            ההזמנה בהכנה. יום לפני המשלוח הבשלן קונה מצרכים טריים, וביום המשלוח
-            מבשל הכל, על המקום.
-          </h4>
+          <h1>תודה! 🥳</h1>
           {estimatedDate && (
             <h3>
               {" "}
@@ -161,8 +157,7 @@ export function DeliveryDisplay() {
             </h3>
           )}
           <h4>
-            ברגע שהאוכל יהיה מוכן, תיפתח כאן מפה עם מיקום השליח וספירה לאחור עד
-            שיגיע!
+            כשהשליח יהיה בדרך, תיפתח כאן מפה עם מיקומו המדויק!
           </h4>
           <h3> </h3>
           <h3> </h3>
